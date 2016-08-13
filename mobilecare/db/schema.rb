@@ -10,15 +10,29 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160813190427) do
+ActiveRecord::Schema.define(version: 20160813230453) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "care_clouds", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "rides", force: :cascade do |t|
     t.integer  "appointment_id"
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
+    t.boolean  "wants_ride"
+    t.boolean  "confirm_ride"
+    t.boolean  "cancel_ride"
+    t.float    "lattitude"
+    t.float    "longitude"
+    t.string   "pick_up_time"
+    t.string   "eta"
+    t.text     "note_to_driver"
+    t.boolean  "return_ride"
   end
 
 end
