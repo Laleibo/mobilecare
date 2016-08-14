@@ -5,7 +5,18 @@ class UberRideRequest < ApplicationRecord
     end_lat = CareCloud.get_office_location[0]
     end_long = CareCloud.get_office_location[1]
     header = {'Authorization' => "Bearer #{ENV['UBER_AUTH']}"}
-    response = HTTParty.get("https://sandbox-api.uber.com/v1/requests/8abd8aeb-87ff-433b-9dd7-57f7fe922aff", headers: header)
+
+    # HTTParty.get("https://sandbox-api.uber.com/v1/requests/8abd8aeb-87ff-433b-9dd7-57f7fe922aff", headers: header)
+    {
+   request_id: "852b8fdd-4369-4659-9628-e122662ad257",
+   product_id: "a1111c8c-c720-46c3-8534-2fcdd730040d",
+   status: "processing",
+   vehicle: "Lamborgni Mercy",
+   driver: "Ronald Mcdonald",
+   location: "Mars",
+   eta: 5,
+   surge_multiplier: 1.0
+      }
   end
 
   def self.ride_request
@@ -21,6 +32,7 @@ class UberRideRequest < ApplicationRecord
 
     Ride.new(appointment_id: CareCloud.get_appointment_id, wants_ride: true, confirm_ride: false, cancel_ride: false, lattitude: CareCloud.get_patient_address[0], longitude: CareCloud.get_patient_address[1], request_id: 0, price_estimation: UberRideRequest.price_estimation, pick_up_time: 0, eta: 0, note_to_driver: "0", return_ride: true)
   end
+
 
   def self.cancel_ride
   end
@@ -38,19 +50,6 @@ class UberRideRequest < ApplicationRecord
     body = {reminder_time: (Time.now + 5.minutes).to_i, phone_number: "+4511241342", event: event.as_json, time: event.time}
       header = {'Authorization' => 'Token vhKRfrggbm7HPxanf4RfQnXf_i3dIAD_8ISj4IyL', 'Content-Type' => 'application/json'}
     HTTParty.post("https://sandbox-api.uber.com/v1/reminders", headers: header, body: body.to_json )
-  end
-
-  def fake_it
-    {
-   request_id: "852b8fdd-4369-4659-9628-e122662ad257",
-   product_id: "a1111c8c-c720-46c3-8534-2fcdd730040d",
-   status: "processing",
-   vehicle: "Lamborgni Mercy",
-   driver: "Ronald Mcdonald",
-   location: "Mars",
-   eta: 5,
-   surge_multiplier: 1.0
-      }
   end
 end
 
