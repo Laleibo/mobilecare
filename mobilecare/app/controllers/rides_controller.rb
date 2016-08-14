@@ -5,8 +5,12 @@ class RidesController < ApplicationController
 
   def create
     @ride = Ride.create!(ride_params)
-
   end
+
+  def show
+    @rides = Ride.all
+  end
+
   def request
   end
 
@@ -17,8 +21,8 @@ class RidesController < ApplicationController
   end
 
 
-
 private
+
 def ride_params
   params.require(:appointment_id, :wants_ride, :lattitude, :longitude, :return_ride).permit(:confirm_ride, :cancel_ride, :pick_up_time, :eta, :note_to_driver)
 end
