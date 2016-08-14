@@ -40,13 +40,4 @@ class CareCloud < ApplicationRecord
     end
       Geocoder.coordinates(@office_street_address + @office_street_city + @office_state)
   end
-  def self.uber_ride
-    p start_lat = CareCloud.get_patient_address[0]
-    p start_long = CareCloud.get_patient_address[1]
-    p end_lat = CareCloud.get_office_location[0]
-    p end_long = CareCloud.get_office_location[1]
-    header = {'Authorization' => "Bearer #{ENV['UBER_AUTH']}"}
-    HTTParty.get("https://sandbox-api.uber.com/v1/estimates/price?start_latitude=#{start_lat}&start_longitude=#{start_long}&end_latitude=#{end_lat}&end_longitude=#{end_long}", headers: header)
-
-  end
 end

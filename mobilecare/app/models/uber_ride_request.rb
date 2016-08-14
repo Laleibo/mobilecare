@@ -1,0 +1,3 @@
+class UberRideRequest
+
+end
