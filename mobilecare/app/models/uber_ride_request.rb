@@ -51,6 +51,15 @@ class UberRideRequest < ApplicationRecord
       header = {'Authorization' => 'Token vhKRfrggbm7HPxanf4RfQnXf_i3dIAD_8ISj4IyL', 'Content-Type' => 'application/json'}
     HTTParty.post("https://sandbox-api.uber.com/v1/reminders", headers: header, body: body.to_json )
   end
+
+  def self.pick_up_time
+    ride_time_in_minutes = UberRideRequest.time_estimation / 60.0
+    appointment_time = DateTime.strptime(CareCloud.get_time_of_appointment)
+    app_time_in_secs = (appointment_time.hour * (60 * 60)) + (appointment_time.minute * (60))
+    seconds_uber_pick_up = app_time_in_secs - 900 - (ride_time_in_minutes * 60)
+    app_hour = seconds_uber_pick_up.to_i / (60 * 60)
+    app_min = (seconds_uber_pick_up.to_i % (60 * 60)) / 60
+  end
 end
 
 class Event
