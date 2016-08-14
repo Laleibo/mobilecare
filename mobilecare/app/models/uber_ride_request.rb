@@ -1,49 +1,4 @@
 class UberRideRequest < ApplicationRecord
-  def self.create_ride
-    start_lat = CareCloud.get_patient_address[0]
-    start_long = CareCloud.get_patient_address[1]
-    end_lat = CareCloud.get_office_location[0]
-    end_long = CareCloud.get_office_location[1]
-    header = {'Authorization' => "Bearer #{ENV['UBER_AUTH']}"}
-
-    # HTTParty.get("https://sandbox-api.uber.com/v1/requests/8abd8aeb-87ff-433b-9dd7-57f7fe922aff", headers: header)
-    {
-   request_id: "852b8fdd-4369-4659-9628-e122662ad257",
-   product_id: "a1111c8c-c720-46c3-8534-2fcdd730040d",
-   status: "processing",
-   vehicle: "Lamborgni Mercy",
-   driver: "Ronald Mcdonald",
-   location: "Mars",
-   eta: 5,
-   surge_multiplier: 1.0
-      }
-  end
-
-  def self.ride_request
-    start_lat = CareCloud.get_patient_address[0]
-    start_long = CareCloud.get_patient_address[1]
-    end_lat = CareCloud.get_office_location[0]
-    end_long = CareCloud.get_office_location[1]
-    header = {'Authorization' => "Bearer #{ENV['UBER_AUTH']}"}
-    HTTParty.get("https://sandbox-api.uber.com/v1/estimates/price?start_latitude=#{start_lat}&start_longitude=#{start_long}&end_latitude=#{end_lat}&end_longitude=#{end_long}", headers: header)
-  end
-
-  def self.pick_up_time
-    ride_time_in_minutes = UberRideRequest.time_estimation / 60.0
-    appointment_time = DateTime.strptime(CareCloud.get_time_of_appointment)
-    app_time_in_secs = (appointment_time.hour * (60 * 60)) + (appointment_time.minute * (60))
-    seconds_uber_pick_up = app_time_in_secs - 900 - (ride_time_in_minutes * 60)
-    app_hour = seconds_uber_pick_up.to_i / (60 * 60)
-    app_min = (seconds_uber_pick_up.to_i % (60 * 60)) / 60
-  end
-
-  def self.schedule_ride
-    Ride.create!(appointment_id: CareCloud.get_appointment_id, wants_ride: true, confirm_ride: false, cancel_ride: false, lattitude: CareCloud.get_patient_address[0], longitude: CareCloud.get_patient_address[1], request_id:'852b8fdd-4369-4659-9628-e122662ad257', price_estimation: UberRideRequest.price_estimation, pick_up_time: pick_up_time, eta: 0, note_to_driver: "0", return_ride: true)
-  end
-
-  def self.cancel_ride
-    @ride.destroy if @ride.cancel_ride == true
-  end
 
   def self.time_estimation
     UberRideRequest.ride_request["prices"][1]["duration"]
@@ -53,20 +8,59 @@ class UberRideRequest < ApplicationRecord
     UberRideRequest.ride_request["prices"][1]["low_estimate"]
   end
 
-  def self.ride_reminder
-    event = Event.new
-    body = {reminder_time: (Time.now + 5.minutes).to_i, phone_number: "+4511241342", event: event.as_json, time: event.time}
-      header = {'Authorization' => 'Token vhKRfrggbm7HPxanf4RfQnXf_i3dIAD_8ISj4IyL', 'Content-Type' => 'application/json'}
-    HTTParty.post("https://sandbox-api.uber.com/v1/reminders", headers: header, body: body.to_json )
+  def self.create_ride
+    start_lat = CareCloud.get_patient_address[0]
+    start_long = CareCloud.get_patient_address[1]
+    end_lat = CareCloud.get_office_location[0]
+    end_long = CareCloud.get_office_location[1]
+    header = {'Authorization' => "Bearer #{ENV['UBER_AUTH']}"}
+    HTTParty.post("https://sandbox-api.uber.com/v1/requests", headers: header)
   end
 
-  def self.pick_up_time
-    ride_time_in_minutes = UberRideRequest.time_estimation / 60.0
-    appointment_time = DateTime.strptime(CareCloud.get_time_of_appointment)
-    app_time_in_secs = (appointment_time.hour * (60 * 60)) + (appointment_time.minute * (60))
-    seconds_uber_pick_up = app_time_in_secs - 900 - (ride_time_in_minutes * 60)
-    app_hour = seconds_uber_pick_up.to_i / (60 * 60)
-    app_min = (seconds_uber_pick_up.to_i % (60 * 60)) / 60
+  def self.ride_request
+    start_lat = CareCloud.get_patient_address[0]
+    start_long = CareCloud.get_patient_address[1]
+    end_lat = CareCloud.get_office_location[0]
+    end_long = CareCloud.get_office_location[1]
+    header = {'Authorization' => "Bearer #{ENV['UBER_AUTH']}"}
+    HTTParty.get("https://sandbox-api.uber.com/v1/estimates/price?start_latitude=#{start_lat}&start_longitude=#{start_long}&end_latitude=#{end_lat}&end_longitude=#{end_long}", headers: header)
+    end
+    def self.pick_up_time
+      ride_time_in_minutes = UberRideRequest.time_estimation / 60.0
+      appointment_time = DateTime.strptime(CareCloud.get_time_of_appointment)
+      app_time_in_secs = (appointment_time.hour * (60 * 60)) + (appointment_time.minute * (60))
+      seconds_uber_pick_up = app_time_in_secs - 900 - (ride_time_in_minutes * 60)
+      @app_hour = seconds_uber_pick_up.to_i / (60 * 60)
+      @app_min = (seconds_uber_pick_up.to_i % (60 * 60)) / 60
+      "#{@app_hour}:#{@app_min}"
+    end
+    def self.lyft_ride
+      start_lat = CareCloud.get_patient_address[0]
+      start_long = CareCloud.get_patient_address[1]
+      end_lat = CareCloud.get_office_location[0]
+      end_long = CareCloud.get_office_location[1]
+      body = {"ride_type" => "lyft", "origin" => {"lat" => start_lat, "lng" => start_long }, "destination" => {"lat" => end_lat, "lng" => end_long} }
+      header = {'Authorization' => ' Bearer SANDBOX-gAAAAABXsGTm9P0Sxq2osFlgzkrfITa6cLuA62lJPPLBi3vrQeNZgDesmi1ggmgdmi0dUcS60JjsCSapCjO-CDnvCpLGTlW8WsJd9LR7oM27dUqKq59Nvw_T8reBAHgtW-WYVaWZ-UvaOb_Nu40q200_Ke7nOOD7pshbZ06WAX50VFxDUrzke7vK7WDuAzs1NDnb_UMiX8hVDIbZy8m77-JloPHkrJPA1lXB_mtTbQ5Il6vvK6ZDXroW4uG8ifWYWxb_MgQXQ82l', 'Content-Type' => 'application/json'}
+      HTTParty.post("https://api.lyft.com/v1/rides", headers: header, body: body.to_json )
+    end
+    def self.simulate_driver_arrived
+      ride_id = UberRideRequest.simluate_driver_accepted["ride_id"]
+      body = {"status" => "arrived"}
+      header = {'Authorization' => ' Bearer SANDBOX-gAAAAABXsGTm9P0Sxq2osFlgzkrfITa6cLuA62lJPPLBi3vrQeNZgDesmi1ggmgdmi0dUcS60JjsCSapCjO-CDnvCpLGTlW8WsJd9LR7oM27dUqKq59Nvw_T8reBAHgtW-WYVaWZ-UvaOb_Nu40q200_Ke7nOOD7pshbZ06WAX50VFxDUrzke7vK7WDuAzs1NDnb_UMiX8hVDIbZy8m77-JloPHkrJPA1lXB_mtTbQ5Il6vvK6ZDXroW4uG8ifWYWxb_MgQXQ82l'}
+
+      HTTParty.put("https://api.lyft.com/v1/sandbox/rides/" + ride_id, headers: header, body: body)
+    end
+    def self.simulate_driver_accepted
+      ride_id = UberRideRequest.lyft_ride["ride_id"]
+      body = {"status" => "accepted"}
+      header = {'Authorization' => ' Bearer SANDBOX-gAAAAABXsGTm9P0Sxq2osFlgzkrfITa6cLuA62lJPPLBi3vrQeNZgDesmi1ggmgdmi0dUcS60JjsCSapCjO-CDnvCpLGTlW8WsJd9LR7oM27dUqKq59Nvw_T8reBAHgtW-WYVaWZ-UvaOb_Nu40q200_Ke7nOOD7pshbZ06WAX50VFxDUrzke7vK7WDuAzs1NDnb_UMiX8hVDIbZy8m77-JloPHkrJPA1lXB_mtTbQ5Il6vvK6ZDXroW4uG8ifWYWxb_MgQXQ82l'}
+
+      HTTParty.put("https://api.lyft.com/v1/sandbox/rides/" + ride_id, headers: header, body: body)
+    end
+  def self.get_status
+    ride_id = UberRideRequest.lyft_ride["ride_id"]
+    header = {'Authorization' => ' Bearer SANDBOX-gAAAAABXsGXQsgW5DGXHODhj26xseYKL4TOmtScoI_62VU0209UaPkpnNnk-yhW3TxKbZfii03vOehQffCcN8dy5XFsLC8tj_8_KqxORbCgNdwFX7iI_TYjUwBNsNtpUQJMW_w0WPMM6POX9RxlSFSD402jan6Vlco3eNXEb9eNwUz-ylKF9cecnxaJLG_6MAgO67jUP3v8CkNbZ4ZE7s5A8h7_reTTQ8Veo0g2nMe8ZWqx6eCCZ8enj75Imtl7ubv-oD4Qmh_Om'}
+    HTTParty.get("https://api.lyft.com/v1/rides/" + ride_id, headers: header)
   end
 end
 
@@ -75,15 +69,12 @@ class Event
   def initialize
     @time = (Time.now + 5.minutes).to_i
     @name = "Rick James"
-
   end
   def as_json
     {time: @time, name: @name}
   end
-  def get_eta
-    #ride_id = can't get it yet :)
-    header = {'Authorization' => 'Token vhKRfrggbm7HPxanf4RfQnXf_i3dIAD_8ISj4IyL', 'Content-Type' => 'application/json'}
-  HTTParty.post("https://sandbox-api.uber.com//v1/requests/#{ride_id}", headers: header,
-  destination.eta
-  end
+
 end
+
+# curl --include -X POST -u 'sUy_984mrKth:SANDBOX-_D-v3z2dsDmFVl61HKIRSj5IJ0r-1Xn2' -H 'Content-Type: application/json;charset=UTF-8' --data '{"grant_type": "client_credentials", "expires_in": 100000000000, "scope": "rides.request"}' 'https://api.lyft.com/oauth/token'
+# curl --include -X POST -u 'sUy_984mrKth:SANDBOX-_D-v3z2dsDmFVl61HKIRSj5IJ0r-1Xn2' -H 'Content-Type: application/json;charset=UTF-8' --data '{"grant_type": "client_credentials", "expires_in": 100000000000, "scope": "rides.read"}' 'https://api.lyft.com/oauth/token'
