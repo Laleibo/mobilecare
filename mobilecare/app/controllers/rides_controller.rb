@@ -1,5 +1,5 @@
 class RidesController < ApplicationController
-  before_action :set_request_id only:, [:update]
+  before_action :set_request_id, only: [:update, :show, :destroy]
 
   def new
     @ride = Ride.new()
@@ -12,6 +12,7 @@ class RidesController < ApplicationController
   def show
     @rides = Ride.all
   end
+
   def pick_up_time
     ride_time_in_minutes = UberRideRequest.time_estimation / 60.0
     appointment_time = DateTime.strptime(CareCloud.get_time_of_appointment)
@@ -21,6 +22,9 @@ class RidesController < ApplicationController
     app_min = (seconds_uber_pick_up.to_i % (60 * 60)) / 60
   end
 
+  def destroy(request_id)
+    UberRideRequest.cancel_ride
+  end
 
   def cancel
   end
@@ -33,13 +37,11 @@ class RidesController < ApplicationController
 
 
 private
+  def ride_params
+    params.require(:appointment_id, :wants_ride, :lattitude, :longitude, :return_ride).permit(:confirm_ride, :cancel_ride, :pick_up_time, :eta, :note_to_driver, :request_id, :price_estimation)
+  end
 
-def ride_params
-  params.require(:appointment_id, :wants_ride, :lattitude, :longitude, :return_ride).permit(:confirm_ride, :cancel_ride, :pick_up_time, :eta, :note_to_driver, :request_id, :price_estimation)
-end
-
-def set_request_id
-  @ride= Ride.find_by(request_id: ride_params[:request_id])
-end
-
+  def set_request_id
+    @ride= Ride.find_by(request_id: ride_params[:request_id])
+  end
 end
