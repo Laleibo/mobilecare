@@ -20,6 +20,10 @@ class RidesController < ApplicationController
   def update
   end
 
+  def update_time
+    @ride = Ride.find_by()
+  end
+
 
 private
 

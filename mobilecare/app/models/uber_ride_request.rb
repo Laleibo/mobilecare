@@ -1,4 +1,4 @@
-class Uber < ApplicationRecord
+class UberRideRequest < ApplicationRecord
   def self.create_ride
     start_lat = CareCloud.get_patient_address[0]
     start_long = CareCloud.get_patient_address[1]
