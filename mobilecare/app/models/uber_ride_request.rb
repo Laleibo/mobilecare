@@ -28,9 +28,12 @@ class UberRideRequest < ApplicationRecord
     HTTParty.get("https://sandbox-api.uber.com/v1/estimates/price?start_latitude=#{start_lat}&start_longitude=#{start_long}&end_latitude=#{end_lat}&end_longitude=#{end_long}", headers: header)
   end
 
-  # def self.schedule_ride
-  #   Ride.new(appointment_id: CareCloud.get_appointment_id, wants_ride: true, confirm_ride: nil, cancel_ride: nil, lattitude: CareCloud.get_patient_address[0], CareCloud.get_patient_address[1], pick_up_time: nil, eta: nil, note_to_driver: nil, return_ride: nil)
-  # end
+  def self.schedule_ride
+
+    Ride.new(appointment_id: CareCloud.get_appointment_id, wants_ride: true, confirm_ride: false, cancel_ride: false, lattitude: CareCloud.get_patient_address[0], longitude: CareCloud.get_patient_address[1], request_id: 0, price_estimation: UberRideRequest.price_estimation, pick_up_time: 0, eta: 0, note_to_driver: "0", return_ride: true)
+  end
+
+
   def self.cancel_ride
   end
 
