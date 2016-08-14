@@ -6,9 +6,11 @@ class CareCloud < ApplicationRecord
   def self.get_appointment_id
       CareCloud.get_appointment[0]["appointment"]["id"]
   end
+
   def self.get_patient_id
     CareCloud.get_appointment[0]["appointment"]["patient"]["id"]
   end
+  
   def self.get_patient
     patient_id = CareCloud.get_patient_id
     header = {'Authorization' => 'Bearer Vsk0x3pTxSDnSJRds5tOyPEC5ehAx7g4'}
