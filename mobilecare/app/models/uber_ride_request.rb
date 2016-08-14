@@ -18,11 +18,11 @@ class UberRideRequest < ApplicationRecord
   end
 
   def self.schedule_ride
-
     Ride.new(appointment_id: CareCloud.get_appointment_id, wants_ride: true, confirm_ride: false, cancel_ride: false, lattitude: CareCloud.get_patient_address[0], longitude: CareCloud.get_patient_address[1], request_id: 0, price_estimation: UberRideRequest.price_estimation, pick_up_time: 0, eta: 0, note_to_driver: "0", return_ride: true)
   end
 
   def self.cancel_ride
+    @ride.destroy if @ride.cancel_ride == true
   end
 
   def self.time_estimation
