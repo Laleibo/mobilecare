@@ -23,23 +23,9 @@ class Uber < ApplicationRecord
     Uber.ride_request["prices"][1]["low_estimate"]
   end
   def self.ride_reminder
-    event = Event.new
     body = {reminder_time: (Time.now + 5.minutes).to_i, phone_number: "+4511241342", event: event.as_json, time: event.time}
       header = {'Authorization' => 'Token vhKRfrggbm7HPxanf4RfQnXf_i3dIAD_8ISj4IyL', 'Content-Type' => 'application/json'}
     HTTParty.post("https://sandbox-api.uber.com/v1/reminders", headers: header, body: body.to_json )
-  end
-
-  def fake_it
-    {
-   request_id: "852b8fdd-4369-4659-9628-e122662ad257",
-   product_id: "a1111c8c-c720-46c3-8534-2fcdd730040d",
-   status: "processing",
-   vehicle: "Lamborgni Mercy",
-   driver: "Ronald Mcdonald",
-   location: "Mars",
-   eta: 5,
-   surge_multiplier: 1.0
-      }
   end
 end
 
