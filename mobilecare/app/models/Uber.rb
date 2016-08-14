@@ -5,7 +5,18 @@ class Uber < ApplicationRecord
     end_lat = CareCloud.get_office_location[0]
     end_long = CareCloud.get_office_location[1]
     header = {'Authorization' => "Bearer #{ENV['UBER_AUTH']}"}
-    HTTParty.get("https://sandbox-api.uber.com/v1/requests/8abd8aeb-87ff-433b-9dd7-57f7fe922aff", headers: header)
+    # HTTParty.get("https://sandbox-api.uber.com/v1/requests/8abd8aeb-87ff-433b-9dd7-57f7fe922aff", headers: header)
+    {
+   request_id: "852b8fdd-4369-4659-9628-e122662ad257",
+   product_id: "a1111c8c-c720-46c3-8534-2fcdd730040d",
+   status: "processing",
+   vehicle: "Lamborgni Mercy",
+   driver: "Ronald Mcdonald",
+   location: "Mars",
+   eta: 5,
+   surge_multiplier: 1.0
+      }
+
   end
 
   def self.ride_request
@@ -28,18 +39,8 @@ class Uber < ApplicationRecord
       header = {'Authorization' => 'Token vhKRfrggbm7HPxanf4RfQnXf_i3dIAD_8ISj4IyL', 'Content-Type' => 'application/json'}
     HTTParty.post("https://sandbox-api.uber.com/v1/reminders", headers: header, body: body.to_json )
   end
-
   def fake_it
-    {
-   request_id: "852b8fdd-4369-4659-9628-e122662ad257",
-   product_id: "a1111c8c-c720-46c3-8534-2fcdd730040d",
-   status: "processing",
-   vehicle: "Lamborgni Mercy",
-   driver: "Ronald Mcdonald",
-   location: "Mars",
-   eta: 5,
-   surge_multiplier: 1.0
-      }
+
   end
 
 end
