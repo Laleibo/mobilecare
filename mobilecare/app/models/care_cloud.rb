@@ -24,9 +24,11 @@ class CareCloud < ApplicationRecord
     end
     Geocoder.coordinates(@street_address + @city + @state)
   end
+
   def self.get_time_of_appointment
     CareCloud.get_appointment[0]["appointment"]["start_time"]
   end
+
   def self.get_office_location
     header = {'Authorization' => 'Bearer Vsk0x3pTxSDnSJRds5tOyPEC5ehAx7g4'}
     location_id = CareCloud.get_appointment[0]["appointment"]["location"]["id"]
