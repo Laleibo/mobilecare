@@ -4,11 +4,13 @@ class CareCloud < ApplicationRecord
      appointment = HTTParty.get('https://external-api-gateway.development.carecloud.com/v2/appointments?start_date=20160801&end_date=20160830', headers: header)
   end
   def self.get_appointment_id
-      CareCloud.get_appointment[0]["appointment"]["id"]
+    return CareCloud.get_appointment[0]["appointment"]["id"]
   end
+
   def self.get_patient_id
     CareCloud.get_appointment[0]["appointment"]["patient"]["id"]
   end
+
   def self.get_patient
     patient_id = CareCloud.get_patient_id
     header = {'Authorization' => 'Bearer Vsk0x3pTxSDnSJRds5tOyPEC5ehAx7g4'}
@@ -24,9 +26,11 @@ class CareCloud < ApplicationRecord
     end
     Geocoder.coordinates(@street_address + @city + @state)
   end
+
   def self.get_time_of_appointment
     CareCloud.get_appointment[0]["appointment"]["start_time"]
   end
+
   def self.get_office_location
     header = {'Authorization' => 'Bearer Vsk0x3pTxSDnSJRds5tOyPEC5ehAx7g4'}
     location_id = CareCloud.get_appointment[0]["appointment"]["location"]["id"]
