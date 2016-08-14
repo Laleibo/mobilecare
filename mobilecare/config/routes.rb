@@ -1,4 +1,10 @@
 Rails.application.routes.draw do
+  get 'rides/request'
+
+  get 'rides/cancel'
+
+  get 'rides/update'
+
   get 'homepage/home'
   root 'homepage#home'
 
