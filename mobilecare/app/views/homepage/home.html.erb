@@ -1,2 +1,47 @@
-<h1>Homepage#home</h1>
-<p>Find me in app/views/homepage/home.html.erb</p>
+<body>
+      <div class="container">
+        <div class="center">
+          <div class="uber">
+            <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+              Launch demo modal
+            </button>
+          </div>
+      <%=image_tag("background.png")%>
+        </div>
+      </div>
+      </body>
+      <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel"> <%=image_tag("uber-logo-white.png") %></h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal">
+   <fieldset>
+       <!-- Address form -->
+       <legend>Current Pickup Address</legend>
+
+       <!-- address-line1 input-->
+       <div class="control-group">
+           <label class="control-label col-sm-4">Update Address</label>
+           <div class="col-sm-8">
+               <input id="address-line1" name="address-line1" type="text" autocomplete="address-line1" placeholder="" class="form-control">
+
+           </div>
+       </div>
+       <div class="control-group">
+           <label class="control-label col-sm-4">City</label>
+           <div class="col-sm-8">
+               <input id="city" name="city" type="text" autocomplete="city" placeholder="city" class="form-control">
+               <p class="help-block"></p>
+           </div>
+       </div>
+       </div>
+   </fieldset>
+</form>
+      </div>
+    </div>
+  </div>
+</div>
