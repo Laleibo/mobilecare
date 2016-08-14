@@ -22,7 +22,7 @@ class RidesController < ApplicationController
   def update
   end
 
-  def destroy
+  def destroy(request_id)
     UberRideRequest.cancel_ride
   end
 
@@ -34,7 +34,7 @@ def ride_params
 end
 
 def set_ride
-  @ride = Ride.find(params[:request_id])
+  @ride = Ride.find_by(params[:request_id])
 end
 
 end
