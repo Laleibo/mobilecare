@@ -21,6 +21,10 @@ class Uber < ApplicationRecord
     Ride.new(appointment_id: CareCloud.get_appointment_id, wants_ride: true, confirm_ride: nil, cancel_ride: nil, lattitude: CareCloud.get_patient_address[0], CareCloud.get_patient_address[1], pick_up_time: nil, eta: nil, note_to_driver: nil, return_ride: nil)
   end
 
+  def self.cancel_ride
+    
+  end
+
   def self.time_estimation
     Uber.ride_request["prices"][1]["duration"]
   end
