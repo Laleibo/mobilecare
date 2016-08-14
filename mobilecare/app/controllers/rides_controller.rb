@@ -20,6 +20,7 @@ class RidesController < ApplicationController
   end
 
   def cancel
+
   end
 
   def update
