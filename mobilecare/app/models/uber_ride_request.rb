@@ -63,4 +63,10 @@ class Event
   def as_json
     {time: @time, name: @name}
   end
+  def get_eta
+    #ride_id = can't get it yet :)
+    header = {'Authorization' => 'Token vhKRfrggbm7HPxanf4RfQnXf_i3dIAD_8ISj4IyL', 'Content-Type' => 'application/json'}
+  HTTParty.post("https://sandbox-api.uber.com//v1/requests/#{ride_id}", headers: header,
+  destination.eta
+  end
 end
