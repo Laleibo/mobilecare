@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160814064223) do
+ActiveRecord::Schema.define(version: 20160814073335) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,7 +21,7 @@ ActiveRecord::Schema.define(version: 20160814064223) do
   end
 
   create_table "rides", force: :cascade do |t|
-    t.integer  "appointment_id"
+    t.string   "appointment_id"
     t.datetime "created_at",       null: false
     t.datetime "updated_at",       null: false
     t.boolean  "wants_ride"
@@ -34,7 +34,7 @@ ActiveRecord::Schema.define(version: 20160814064223) do
     t.text     "note_to_driver"
     t.boolean  "return_ride"
     t.integer  "price_estimation"
-    t.integer  "request_id"
+    t.string   "request_id"
   end
 
   create_table "ubers", force: :cascade do |t|

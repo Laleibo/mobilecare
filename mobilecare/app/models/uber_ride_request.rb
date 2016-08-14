@@ -28,10 +28,18 @@ class UberRideRequest < ApplicationRecord
     HTTParty.get("https://sandbox-api.uber.com/v1/estimates/price?start_latitude=#{start_lat}&start_longitude=#{start_long}&end_latitude=#{end_lat}&end_longitude=#{end_long}", headers: header)
   end
 
-  def self.schedule_ride
-    Ride.create!(appointment_id: CareCloud.get_appointment_id, wants_ride: true, confirm_ride: false, cancel_ride: false, lattitude: CareCloud.get_patient_address[0], longitude: CareCloud.get_patient_address[1], request_id: 0, price_estimation: UberRideRequest.price_estimation, pick_up_time: 0, eta: 0, note_to_driver: "0", return_ride: true)
+  def self.pick_up_time
+    ride_time_in_minutes = UberRideRequest.time_estimation / 60.0
+    appointment_time = DateTime.strptime(CareCloud.get_time_of_appointment)
+    app_time_in_secs = (appointment_time.hour * (60 * 60)) + (appointment_time.minute * (60))
+    seconds_uber_pick_up = app_time_in_secs - 900 - (ride_time_in_minutes * 60)
+    app_hour = seconds_uber_pick_up.to_i / (60 * 60)
+    app_min = (seconds_uber_pick_up.to_i % (60 * 60)) / 60
   end
 
+  def self.schedule_ride
+    Ride.create!(appointment_id: CareCloud.get_appointment_id, wants_ride: true, confirm_ride: false, cancel_ride: false, lattitude: CareCloud.get_patient_address[0], longitude: CareCloud.get_patient_address[1], request_id:'852b8fdd-4369-4659-9628-e122662ad257', price_estimation: UberRideRequest.price_estimation, pick_up_time: pick_up_time, eta: 0, note_to_driver: "0", return_ride: true)
+  end
 
   def self.cancel_ride
     @ride.destroy if @ride.cancel_ride == true
