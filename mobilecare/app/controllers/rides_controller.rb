@@ -1,5 +1,5 @@
 class RidesController < ApplicationController
-  before_action :set_request_id only:, [:update]
+  before_action :set_request_id, only: [:update, :show, :destroy]
 
   def new
     @ride = Ride.new()
@@ -14,6 +14,11 @@ class RidesController < ApplicationController
   end
 
 
+
+  def destroy(request_id)
+    UberRideRequest.cancel_ride
+  end
+
   def cancel
   end
 
@@ -22,6 +27,9 @@ class RidesController < ApplicationController
   end
 
 private
+  def ride_params
+    params.require(:appointment_id, :wants_ride, :lattitude, :longitude, :return_ride).permit(:confirm_ride, :cancel_ride, :pick_up_time, :eta, :note_to_driver, :request_id, :price_estimation)
+  end
 
 def ride_params
   params.require(:appointment_id, :wants_ride, :lattitude, :longitude, :return_ride).permit(:confirm_ride, :cancel_ride, :pick_up_time, :eta, :note_to_driver, :request_id, :price_estimation)
