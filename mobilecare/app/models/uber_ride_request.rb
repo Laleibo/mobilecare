@@ -19,9 +19,7 @@ class UberRideRequest < ApplicationRecord
 
   def self.schedule_ride
 
-    Appointment = CareCloud.get_appointment
-
-    Ride.new(appointment_id: CareCloud.get_appointment_id, wants_ride: true, confirm_ride: nil, cancel_ride: nil, lattitude: CareCloud.get_patient_address[0], CareCloud.get_patient_address[1], request_id: nil, price_estimation: UberRideRequest.price_estimation, pick_up_time: nil, eta: nil, note_to_driver: nil, return_ride: nil)
+    Ride.new(appointment_id: CareCloud.get_appointment_id, wants_ride: true, confirm_ride: false, cancel_ride: false, lattitude: CareCloud.get_patient_address[0], longitude: CareCloud.get_patient_address[1], request_id: 0, price_estimation: UberRideRequest.price_estimation, pick_up_time: 0, eta: 0, note_to_driver: "0", return_ride: true)
   end
 
   def self.cancel_ride
