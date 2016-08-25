@@ -2,8 +2,8 @@ CareCloud Hackathon 2016
 
 
 
-Alt-H1
-Introduction
+
+## Introduction
 
 This Web application as built by 5 Wyncoders during the 24 hour CareCloud Hackathon in August of 2016.  
 
